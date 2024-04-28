@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+<main>
+
+{% for art in art%}
+  <article class="card">
+    <!-- Article 1-->
+    <h2><a href="{% url 'home:dateile' art.id art.slug %}">{{ art.title }}</h2><img src="{{ art.thumbnail.url }}" alt="تصویر مقاله" style="width: 100%; height: 200px;">
+    <p>{{ art.description|truncatewords:20 }}</p></a>
+    <!-- Date/Time & Comments Count Info-->
+    <p class="article-info">تاریخ انتشار:{{art.updated|timesince}}</p>
+    <a href="{% url 'home:author' art.author %}" class="btn btn-primary">{{ art.author }}</a>
+
+    <div class="article-tags">
+      <ul class="tags-list">
+        {% for cat in art.category.published_cat %}
+        <li><a href="{% url 'home:category' cat.slug %}">{{ cat.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
+{% endfor %}
+  <!-- Pagination row-->
+  <div class="pagination">
+
+    {% if art.has_previous %}
+    <a class="page-link" href="?page={{ art.previous_page_number }}">قبلی</a>
+
+    {% if art.number > 3 %}
+   
+    <a class="page-link" href="?page=1">1</a>
+
+
+    {% if art.number > 4 %}
+
+    <span class="page-link">...</span>
+
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+
+    {% for num in art.paginator.page_range %}
+    {% if art.number == num %}
+    <a class="page-link active" href="?page={{ num }}">{{ num }}</a>
+    {% elif num > art.number|add:'-3' and num < art.number|add:'3' %}
+    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+
+
+    {% if art.has_next %}
+
+    {% if art.number < art.paginator.num_pages|add:'-3' %}
+    <span class="page-link">...</span>
+    <a class="page-link" href="?page={{ art.paginator.num_pages }}">{{ art.paginator.num_pages }}</a>
+    {% elif art.number < art.paginator.num_pages|add:'-2' %}
+    <a class="page-link" href="?page={{ art.paginator.num_pages }}">{{ art.paginator.num_pages }}</a>
+{% endif %}
+    <a class="page-link" href="?page={{ art.next_page_number }}">بعدی</a>
+    {% endif %}
+
+  </div>
+
+
+
+
+
+</main>
+
+{% endblock %}
+
+
+

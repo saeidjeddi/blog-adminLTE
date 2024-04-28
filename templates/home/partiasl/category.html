@@ -1,0 +1,12 @@
+{% load static %}
+
+
+<div class="card">
+    <h5 class="sidebar-card-title">دسته‌بندی‌ها</h5>
+    <ul>
+      {% for cat in category %}
+      <li><a href="{% url 'home:category' cat.slug %}">{{cat.title}}</a></li>
+
+      {% endfor %}
+    </ul>
+  </div>

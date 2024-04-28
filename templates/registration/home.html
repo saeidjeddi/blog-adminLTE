@@ -1,0 +1,133 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+title
+{% endblock %}
+
+
+{% block main %}
+
+<p class="col-12 d-flex justify-content-center alert alert-primary"> سلام : {{ request.user.get_full_name }} </p>
+
+
+
+<div class="col-12">
+  {% if object_list %}
+  <div class="card">
+    <div class="card-body table-responsive p-0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>عنوان مقاله</th>
+            <th>تصویر بندانگشتی</th>
+            <th>دسته‌بندی</th>
+            <th>نویسنده</th>
+            <th>خلاصه</th>
+            <th>زمان انتشار</th>
+            <th>مقاله ویژه</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for article in object_list %}
+          <tr>
+            <td>
+              {% if article.status in 'bd'|make_list or user.is_superuser %}
+              <a href="{% url 'account:articleupdate' article.pk %}">{{article.title}}</a>
+              {% else %}
+              {{article.title}}
+              {% endif %}
+            </td>
+            <td><img src="{{article.thumbnail.url}}" width="120"/></td>
+            <td>{{article.category_to_str}}</td>
+            <td>{{article.author.get_full_name}}</td>
+            <td>{{article.description|striptags|truncatewords:"30"}}</td>
+            <td>{{article.publish}}</td>
+            <td>
+              {% if article.is_special %}
+              <i class="fa fa-check-circle" style="color: green;"></i>
+              {% else %}
+              <i class="fa fa-minus-circle" style="color: red;"></i>
+              {% endif %}
+            </td>
+            <td>
+              {% if article.status == 'p' %}
+              <span class="badge badge-success">منتشرشده</span>
+              <a target="_blank" class="badge badge-primary"
+                href="{% url 'home:dateile' article.pk article.slug %}">نمایش</a>
+              {% elif article.status == 'i' %}
+              <span class="badge" style="background-color: #32f4df;">درحال بررسی</span>
+              {% if user.is_superuser %}
+              <a target="_blank" class="badge badge-secondary" href="{% url 'home:previw' article.pk %}">پیشنمایش</a>
+              {% endif %}
+              {% else %}
+              {% if article.status == 'd' %}
+              <span class="badge badge-danger">پیش‌نویس</span>
+              {% else %}
+              <span class="badge badge-warning">برگشت داده شده</span>
+              {% endif %}
+              <a target="_blank" class="badge badge-secondary" href="{% url 'home:previw' article.pk %}">پیشنمایش</a>
+              {% endif %}
+
+              {% if user.is_superuser %}
+              <a class="badge text-danger" href="{% url 'account:article-delete' article.pk %}">حذف</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- /.card -->
+{% else %}
+<h3>محتوایی برای نمایش وجود ندارد.</h3>
+{% endif %}
+
+
+
+
+<div class="card-footer clearfix col-12 d-flex justify-content-center">
+  <ul class="pagination pagination-sm m-0 float-right">
+
+
+    {% if page_obj.has_previous %}
+
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a></li>
+    {% if page_obj.number > 3 %}
+    <li class="page-item"><a class="page-link" href="?page=1">۱</a></li>
+
+    {% if page_obj.number > 4 %}
+    <li class="page-item"><span class="page-link">...</span></li>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+
+    {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+    <li class="page-item"><span class="page-link">...</span></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+    {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+    {% endif %}
+
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a></li>
+    {% endif %}
+
+  </ul>
+</div>
+
+
+{% endblock %}

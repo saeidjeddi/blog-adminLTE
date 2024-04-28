@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+<main>
+
+{% for cat in category.articles.all %}
+  <article class="card">
+    <!-- Article 1-->
+    <h2><a href="{% url 'home:dateile' cat.id cat.slug %}">{{ cat.title }}</h2><img src="{{ cat.thumbnail.url }}" alt="تصویر مقاله" style="width: 100%; height: 200px;">
+    <p>{{ cat.description|truncatewords:20 }}</p></a>
+    <!-- Date/Time & Comments Count Info-->
+    <p class="article-info">تاریخ انتشار:{{cat.updated|timesince}}</p>
+
+    <div class="article-tags">
+      <ul class="tags-list">
+        {% for cat in cat.category_pub.all %}
+        <li><a href="{% url 'home:category' cat.slug %}">{{ cat.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
+{% endfor %}
+  <!-- Pagination row-->
+  <div class="pagination"><a class="page-link" href="#">قبلی</a><a class="page-link active" href="#">1</a><a class="page-link" href="#">2</a>...<a class="page-link" href="#">23</a><a class="page-link" href="#">24</a><a class="page-link" href="#">بعدی</a></div>
+</main>
+
+{% endblock %}
+
+
+

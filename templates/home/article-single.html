@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+<main>
+  <!-- Breadcrumb navigation-->
+  <div class="breadcrumb"><a href="index.html">خانه</a> &gt; <a href="article-list.html">مقاله‌ها</a> &gt; 
+    لیست نوشته‌های دسته‌بندی تکنولوژی
+  </div>
+  <article class="card">
+    <!-- Article Content-->
+    <h1>{{detaile.title}}</h1>
+    <img src="{{ detaile.thumbnail.url }}" alt="تصویر مقاله" style="width: 100%; height: 450px;">
+    
+
+
+    {% if object.is_special %}
+    {% if user.is_authenticated and user.is_special_user or user == object.author or user.is_superuser %}
+      {{object.description|safe}}
+    {% else %}
+      <p>این مقاله، ویژه است و برای مشاهده ی آن باید <a href="#">اشتراک ویژه</a> تهیه بکنید.</p>
+    {% endif %}
+  {% else %}
+    {{object.description|safe}}
+  {% endif %}
+
+
+
+    
+    <!-- <p>{{ detaile.description|safe }}</p>    -->
+    <div class="article-tags">
+      <h5>برچسب‌ها:</h5>
+      <ul class="tags-list">
+        <li><a href="#">تکنولوژی</a></li>
+        <li><a href="#">برنامه‌نویسی وب</a></li>
+        <li><a href="#">HTML</a></li>
+        <li><a href="#">CSS</a></li>
+        <li><a href="#">JavaScript</a></li>
+      </ul>
+    </div>
+    <!-- Share Buttons-->
+    <div class="share-buttons">
+      <h5>اشتراک‌گذاری:</h5>
+      <ul class="social-list">
+        <li><a class="social-icon telegram" href="https://t.me/share/url?url=YOUR_URL_HERE" target="_blank" title="اشتراک گذاری در تلگرام"><i class="fab fa-telegram-plane"></i></a></li>
+        <li><a class="social-icon twitter" href="https://twitter.com/intent/tweet?url=YOUR_URL_HERE&amp;text=YOUR_TEXT_HERE" target="_blank" title="اشتراک گذاری در توییتر"><i class="fab fa-twitter"></i></a></li>
+        <li><a class="social-icon whatsapp" href="https://api.whatsapp.com/send?text=YOUR_TEXT_HERE%20YOUR_URL_HERE" target="_blank" title="اشتراک گذاری در واتساپ"><i class="fab fa-whatsapp"></i></a></li>
+        <li><a class="social-icon facebook" href="https://www.facebook.com/sharer/sharer.php?u=YOUR_URL_HERE" target="_blank" title="اشتراک گذاری در فیسبوک"><i class="fab fa-facebook-f"></i></a></li>
+        <li><a class="social-icon linkedin" href="https://www.linkedin.com/shareArticle?url=YOUR_URL_HERE&amp;title=YOUR_TITLE_HERE" target="_blank" title="اشتراک گذاری در لینکداین"><i class="fab fa-linkedin-in"></i></a></li>
+        <!-- Add more share buttons for other social media platforms as needed-->
+      </ul>
+    </div>
+    <!-- Date/Time & Comments Count Info-->
+    <p class="article-info">تاریخ انتشار: ۱۹ اسفند ۱۴۰۲ | ساعت ۳:۵۵ ب.ظ | ۱۷ نظر</p>
+    <!-- Related Articles List-->
+  </article>
+  <!-- Related Articles-->
+
+</main>
+
+
+{% endblock %}
